@@ -19,6 +19,4 @@ http://localhost:3000/file/uuid0001
     <input type="submit" value="Submit">
 </form>
 
-远程连接 123.206.29.15 用户: ubuntu 密码: piaolian@1
-
 进入/home/ubuntu/app/go,上传的文件如果成功,则在这个目录中
