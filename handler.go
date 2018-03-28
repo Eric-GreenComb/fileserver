@@ -77,6 +77,7 @@ func HandlerGetUploadFile(c *gin.Context) {
 // HandlerUploadFile HandlerUploadFile
 func HandlerUploadFile(c *gin.Context) {
 	_uuid := c.PostForm("uuid")
+	_name := c.PostForm("name")
 	_desc := c.PostForm("desc")
 
 	file, err := c.FormFile("file")
@@ -97,8 +98,10 @@ func HandlerUploadFile(c *gin.Context) {
 
 	_fileInfo := FileInfo{
 		UUID: _uuid,
-		Name: file.Filename,
+		Name: _name,
 		Desc: _desc,
+		File: file.Filename,
+		Path: ServerConfig.UploadURL,
 		URL:  _url,
 		Hash: _hash,
 	}

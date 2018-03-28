@@ -12,11 +12,19 @@ http://localhost:3000/file/uuid0001
 
 ## upload file
 
-<form action="http://123.206.29.15:3000/upload" method="post" enctype="multipart/form-data">
-    Name: <input type="text" name="name"><br>
-    Email: <input type="email" name="email"><br>
-    Files: <input type="file" name="file"><br><br>
-    <input type="submit" value="Submit">
-</form>
+http://localhost:3000/upload
 
-进入/home/ubuntu/app/go,上传的文件如果成功,则在这个目录中
+    <form action="http://123.206.29.15:3000/upload" method="post" enctype="multipart/form-data">
+        UUID:
+        <input type="text" name="uuid">
+        <br> 文件名称:
+        <input type="text" name="name">
+        <br> 描述:
+        <input type="text" name="desc">
+        <br> Files:
+        <input type="file" name="file">
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
