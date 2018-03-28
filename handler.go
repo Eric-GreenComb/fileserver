@@ -7,6 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HandlerIndex HandlerIndex
+func HandlerIndex(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
+}
+
 // HandlerHealth HandlerHealth
 func HandlerHealth(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "UP"})
@@ -64,21 +69,51 @@ func HandlerFileInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, _fileInfo)
 }
 
+// HandlerGetUploadFile HandlerGetUploadFile
+func HandlerGetUploadFile(c *gin.Context) {
+	c.HTML(http.StatusOK, "upload.html", nil)
+}
+
 // HandlerUploadFile HandlerUploadFile
 func HandlerUploadFile(c *gin.Context) {
-	// uuid := c.PostForm("uuid")
+	_uuid := c.PostForm("uuid")
+	_desc := c.PostForm("desc")
 
-	// Source
-	// file, err := c.FormFile("file")
-	// if err != nil {
-	// 	c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
-	// 	return
-	// }
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
 
-	// if err := c.SaveUploadedFile(file, file.Filename); err != nil {
-	// 	c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
-	// 	return
-	// }
+	_uploadFile := ServerConfig.UploadDir + file.Filename
+	if err := c.SaveUploadedFile(file, _uploadFile); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
 
-	// c.JSON(http.StatusOK, gin.H{"errcode": 0, "errmsg": ""})
+	_hash := md5sum(_uploadFile)
+
+	_url := ServerConfig.UploadURL + file.Filename
+
+	_fileInfo := FileInfo{
+		UUID: _uuid,
+		Name: file.Filename,
+		Desc: _desc,
+		URL:  _url,
+		Hash: _hash,
+	}
+
+	_json, err := json.Marshal(_fileInfo)
+	if err != nil {
+		c.JSON(200, gin.H{"errcode": 1, "errmsg": "json error"})
+		return
+	}
+
+	err = GetBadgerDB().Write(_uuid, _json)
+	if err != nil {
+		c.JSON(200, gin.H{"errcode": 1, "errmsg": "badger write error"})
+		return
+	}
+
+	c.JSON(200, gin.H{"errcode": 0, "errmsg": _fileInfo})
 }

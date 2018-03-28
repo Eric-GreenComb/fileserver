@@ -1,0 +1,10 @@
+###############################################################################
+#
+#    Service Config section
+#
+###############################################################################
+server:
+  port: 3000
+  mode: debug  # debug;release
+  upload_dir: /home/eric/upload/
+  upload_url: http://s1.t.com/ss/
