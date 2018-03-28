@@ -6,5 +6,5 @@
 server:
   port: 3000
   mode: debug  # debug;release
-  upload_dir: /home/eric/upload/
-  upload_url: http://s1.t.com/ss/
+  upload_dir: /home/eric/docker-v/fileserver/html/file/
+  upload_url: http://localhost:5000/file/
