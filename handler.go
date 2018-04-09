@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/banerwai/gommon/uuid"
 	"github.com/gin-gonic/gin"
 )
 
@@ -76,18 +78,23 @@ func HandlerGetUploadFile(c *gin.Context) {
 
 // HandlerUploadFile HandlerUploadFile
 func HandlerUploadFile(c *gin.Context) {
-	_uuid := c.PostForm("uuid")
+	// _uuid := c.PostForm("uuid")
+	_uuid := UUID()
+	fmt.Println("upload : " + _uuid)
 	_name := c.PostForm("name")
 	_desc := c.PostForm("desc")
 
-	file, err := c.FormFile("file")
+	file, err := c.FormFile("file1")
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	_uploadFile := ServerConfig.UploadDir + file.Filename
+
+	fmt.Println("upload : " + _uploadFile)
 	if err := c.SaveUploadedFile(file, _uploadFile); err != nil {
+		fmt.Println(err.Error())
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -108,15 +115,36 @@ func HandlerUploadFile(c *gin.Context) {
 
 	_json, err := json.Marshal(_fileInfo)
 	if err != nil {
-		c.JSON(200, gin.H{"errcode": 1, "errmsg": "json error"})
+		c.JSON(http.StatusBadRequest, gin.H{"errcode": 1, "errmsg": "json error"})
 		return
 	}
 
 	err = GetBadgerDB().Write(_uuid, _json)
 	if err != nil {
-		c.JSON(200, gin.H{"errcode": 1, "errmsg": "badger write error"})
+		c.JSON(http.StatusBadRequest, gin.H{"errcode": 1, "errmsg": "badger write error"})
 		return
 	}
 
-	c.JSON(200, gin.H{"errcode": 0, "errmsg": _fileInfo})
+	c.JSON(http.StatusOK, _fileInfo)
+}
+
+// HandlerGetTest HandlerGetTest
+func HandlerGetTest(c *gin.Context) {
+	c.HTML(http.StatusOK, "form-url.html", nil)
+}
+
+// HandlerTest HandlerTest
+func HandlerTest(c *gin.Context) {
+
+	_uuid := c.PostForm("uuid")
+	// _uuid := "test"
+
+	fmt.Println("test : " + _uuid)
+
+	c.JSON(200, gin.H{"errcode": 0, "errmsg": _uuid})
+}
+
+// UUID Google UUID
+func UUID() string {
+	return uuid.UUID()
 }

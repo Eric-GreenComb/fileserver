@@ -31,6 +31,9 @@ func main() {
 	router.POST("/file/create", HandlerCreateFile)
 	router.GET("/file/:uuid", HandlerFileInfo)
 
+	router.GET("/test", HandlerGetTest)
+	router.POST("/test", HandlerTest)
+
 	router.Run(":" + ServerConfig.Port)
 }
 
